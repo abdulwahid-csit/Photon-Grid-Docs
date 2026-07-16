@@ -1,0 +1,12 @@
+{
+  "label": "Sparklines",
+  "position": 2,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Sparklines",
+    "description": "Render compact in-cell sparkline charts in Photon Grid.",
+    "slug": "/category/sparklines"
+  }
+}

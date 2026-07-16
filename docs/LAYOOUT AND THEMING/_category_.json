@@ -1,0 +1,12 @@
+{
+  "label": "Layout & Theming",
+  "position": 4,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Layout & Theming",
+    "description": "Theme Photon Grid with built-in light and dark themes, custom borders, fonts, headers, icons, and selection styles.",
+    "slug": "/category/layout-and-theming"
+  }
+}

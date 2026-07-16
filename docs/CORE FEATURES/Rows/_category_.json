@@ -1,0 +1,12 @@
+{
+  "label": "Rows",
+  "position": 2,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Rows",
+    "description": "Work with rows in Photon Grid: sorting, grouping, selection, checkboxes, dragging, height, and row actions.",
+    "slug": "/category/rows"
+  }
+}

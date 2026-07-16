@@ -6,7 +6,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Photon Grid',
-  tagline: 'Photon Grid',
+  tagline: 'The high-performance JavaScript data grid for sorting, filtering, grouping, editing, charting and theming.',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -15,17 +15,23 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-site.example.com',
+  url: 'https://photongrid.dev',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'photon-grid', // Usually your GitHub org/user name.
+  projectName: 'photon-grid-docs', // Usually your repo name.
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -41,10 +47,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          routeBasePath: 'docs',
+          showLastUpdateTime: true,
         },
         blog: {
           showReadingTime: true,
@@ -52,10 +56,6 @@ const config: Config = {
             type: ['rss', 'atom'],
             xslt: true,
           },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -64,6 +64,12 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
+        sitemap: {
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/tags/**'],
+          filename: 'sitemap.xml',
+        },
       } satisfies Preset.Options,
     ],
   ],
@@ -71,26 +77,49 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+    metadata: [
+      {
+        name: 'keywords',
+        content:
+          'photon grid, javascript data grid, js data grid, data table, sorting, filtering, grouping, cell editing, pagination, integrated charts, sparklines, theming',
+      },
+      {
+        name: 'description',
+        content:
+          'Photon Grid is a fast, feature-rich JavaScript data grid with sorting, filtering, grouping, editing, selection, pagination, integrated charts, sparklines and theming.',
+      },
+      {name: 'og:type', content: 'website'},
+      {name: 'twitter:card', content: 'summary_large_image'},
+    ],
     colorMode: {
       respectPrefersColorScheme: true,
     },
+    docs: {
+      sidebar: {
+        hideable: true,
+        autoCollapseCategories: true,
+      },
+    },
     navbar: {
-      title: 'My Site',
+      title: 'Photon Grid',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Photon Grid Logo',
         src: 'img/logo.svg',
       },
       items: [
+        {to: '/demos', label: 'Demos', position: 'left'},
         {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Documentation',
         },
+        {to: '/api', label: 'API', position: 'left'},
         {to: '/blog', label: 'Blog', position: 'left'},
+        {to: '/contact', label: 'Contact Us', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
+          href: 'https://www.npmjs.com/package/photon-grid-core',
+          label: 'npm',
           position: 'right',
         },
       ],
@@ -102,43 +131,67 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Quick Start',
+              to: '/docs/GETTING STARTED/Quick Start',
+            },
+            {
+              label: 'Columns',
+              to: '/docs/CORE FEATURES/Columns/Overview',
+            },
+            {
+              label: 'Charting',
+              to: '/docs/CHARTING/Integrated/Overview',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Resources',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'npm package',
+              href: 'https://www.npmjs.com/package/photon-grid-core',
             },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
               label: 'Blog',
               to: '/blog',
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'API',
+              to: '/blog',
+            },
+            {
+              label: 'Contact',
+              to: '/blog',
+            },
+          ],
+        },
+        {
+          title: 'Sites',
+          items: [
+            {
+              label: 'Github',
+              href: 'https://www.npmjs.com/package/photon-grid-core',
+            },
+            {
+              label: 'Youtube',
+              to: '/blog',
+            },
+            {
+              label: 'LinkedIn',
+              href: 'https://www.linkedin.com/company/photon-grid',
+            },
+            {
+              label: 'Facebook',
+              to: '/blog',
+            },
+            {
+              label: 'X',
+              to: '/blog',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Photon Grid.`,
     },
     prism: {
       theme: prismThemes.github,

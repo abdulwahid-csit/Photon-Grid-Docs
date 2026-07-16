@@ -1,0 +1,12 @@
+{
+  "label": "Charting",
+  "position": 3,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Charting",
+    "description": "Create integrated charts and in-cell sparklines directly from Photon Grid data.",
+    "slug": "/category/charting"
+  }
+}

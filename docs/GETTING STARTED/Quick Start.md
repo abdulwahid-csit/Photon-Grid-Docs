@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
-title: Quick Start
-description: Build your first Photon Grid in less than a minute.
+title: "Quick Start"
+description: "Build your first Photon Grid in less than a minute."
 ---
 
 # Quick Start

@@ -1,0 +1,12 @@
+{
+  "label": "Theming",
+  "position": 1,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Theming",
+    "description": "Apply and customize Photon Grid themes, including borders, fonts, headers, icons, and selection styling.",
+    "slug": "/category/theming"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "label": "Integrated Charts",
+  "position": 1,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Integrated Charts",
+    "description": "Build interactive charts from grid data with Photon Grid's integrated charting API.",
+    "slug": "/category/integrated-charts"
+  }
+}

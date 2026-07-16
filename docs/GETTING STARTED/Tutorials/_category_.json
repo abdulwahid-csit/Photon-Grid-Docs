@@ -1,0 +1,12 @@
+{
+  "label": "Tutorials",
+  "position": 4,
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Photon Grid Tutorials",
+    "description": "Step-by-step tutorials for building, styling, and testing a Photon Grid.",
+    "slug": "/category/tutorials"
+  }
+}
