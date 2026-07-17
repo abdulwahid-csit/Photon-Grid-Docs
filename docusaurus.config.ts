@@ -16,7 +16,7 @@ const GOOGLE_SITE_VERIFICATION = '';
 const config: Config = {
   title: 'Photon Grid',
   tagline: 'The high-performance JavaScript data grid for React, Angular, Vue and vanilla JS — sorting, filtering, grouping, editing, charting and theming.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/logo.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -150,8 +150,8 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    // Social/share card (og:image, twitter image) — uses the Photon Grid logo.
+    image: 'img/logo.svg',
     metadata: [
       {
         name: 'keywords',
