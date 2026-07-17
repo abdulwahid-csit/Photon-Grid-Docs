@@ -12,7 +12,7 @@ Resizing lets users and code adjust how wide each column is. Photon Grid support
 ## Overview
 
 Column widths can change in three ways: the user drags a column border, you set an exact width in code, or you ask the grid to fit all columns into the available space. A `minWidth` guards against columns collapsing too far, and the `column:resized` event lets you react to any change.
-
+ 
 ## Enabling drag-to-resize
 
 Set `resizable: true` on a column to let users drag its border. Add `minWidth` to set a floor:

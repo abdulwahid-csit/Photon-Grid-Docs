@@ -40,6 +40,11 @@ const config: Config = {
 
   onBrokenLinks: 'warn',
 
+  // Runs early on the client. Debounces ResizeObserver callbacks to a frame so
+  // the benign "ResizeObserver loop" warning never fires (webpack-dev-server
+  // otherwise shows it as a red error overlay).
+  clientModules: ['./src/client/resize-observer-fix.ts'],
+
   markdown: {
     hooks: {
       onBrokenMarkdownLinks: 'warn',
