@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import {useColorMode} from '@docusaurus/theme-common';
 
 import {DEMOS as DEMOS_RAW} from '@site/src/components/GridDemos/data';
 import '@site/src/components/GridDemos/styles.css';
@@ -45,13 +44,23 @@ function loadPhoton(): Promise<any> {
   });
 }
 
-function DemosApp(): React.ReactElement {
-  const {colorMode} = useColorMode();
-  const dark = colorMode === 'dark';
+function intBetween(rng: any, a: any, b: any) { return Math.floor(between(rng, a, b + 1)); }
+function between(rng: any, a: any, b: any) { return a + rng() * (b - a); }
+function mulberry32(seed: number) {
+  return function () {
+    seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+    var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
+function DemosApp(): React.ReactElement {
   const gridElRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<any>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const financeIntervalRef = useRef<number | null>(null);
+
 
   const [activeId, setActiveId] = useState(DEMOS[0].id);
   const [ready, setReady] = useState(false);
@@ -71,8 +80,12 @@ function DemosApp(): React.ReactElement {
     };
   }, []);
 
-  // (Re)build the grid whenever the active demo or the site theme changes.
+  // (Re)build the grid whenever the active demo changes.
   useEffect(() => {
+    if (financeIntervalRef.current) {
+  clearInterval(financeIntervalRef.current);
+  financeIntervalRef.current = null;
+}
     if (!ready || !gridElRef.current) return;
     const PG = (window as any).PhotonGrid;
     if (!PG) return;
@@ -85,20 +98,56 @@ function DemosApp(): React.ReactElement {
 
     const options = Object.assign(
       {
-        headerRowHeight: 46,
-        rowHeight: 46,
-        theme: dark ? PG.darkTheme : PG.lightTheme,
-        pagination: {enabled: true, pageSize: 25},
+        pagination: {enabled: true, pageSize: 100000},
       },
       built.options || {},
       {columns: built.columns, data: built.data},
     );
 
     gridRef.current = new PG.GridCore(gridElRef.current, options);
+    if (active.id === "finance") {
+  financeIntervalRef.current = window.setInterval(() => {
+    const api = gridRef.current?.api;
+    if (!api) return;
+
+    const rows = built.data;
+    // var rng = mulberry32(202);
+
+    rows.forEach((row) => {
+
+      // move price a little
+      row.price += (Math.random() - 0.5) * 4;
+
+      // recalculate %
+      row.change += (Math.random() - 0.5) * 0.35;
+
+      // market cap
+      row.marketCap += (Math.random() - 0.5) * 10000000000;
+
+      // volume
+      row.volume += Math.floor((Math.random() - 0.5) * 1000000);
+
+      // update sparkline
+      row.trend = Array.from({ length: 5 }, function () {
+        return Math.floor(Math.random() * 491) + 10; // 10 - 500
+      });
+
+      // row.trend.push({
+      //   xKey: new Date().toISOString().substring(0,10),
+      //   yKey: row.price
+      // });
+
+    });
+
+    // api.setData(rows);
+    api.applyTransactionAsync(rows);
+
+  }, 300);
+}
     setMeta({rows: built.data.length, cols: built.columns.length});
     if (searchRef.current) searchRef.current.value = '';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, activeId, dark]);
+  }, [ready, activeId]);
 
   // Destroy the grid on unmount (e.g. navigating away).
   useEffect(
@@ -150,7 +199,7 @@ function DemosApp(): React.ReactElement {
       </section>
 
       <section className="pg-panel">
-        <div className="pg-toolbar">
+        {/* <div className="pg-toolbar">
           <div className="pg-meta">
             <strong>{meta.rows}</strong> rows
             <span className="pg-dot" />
@@ -170,7 +219,7 @@ function DemosApp(): React.ReactElement {
               />
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="pg-gridwrap">
           {error ? (
             <div className="pg-demos__loading">{error}</div>

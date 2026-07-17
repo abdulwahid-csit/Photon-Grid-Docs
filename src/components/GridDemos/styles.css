@@ -5,7 +5,7 @@
    ============================================================ */
 
 .pg-demos {
-  --pg-surface: #ffffff;
+  /* --pg-surface: #ffffff;
   --pg-surface-2: #f8fafc;
   --pg-border: #e6eaf0;
   --pg-text: #0f172a;
@@ -14,12 +14,17 @@
   --pg-primary-weak: #eff4ff;
   --pg-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 8px 24px rgba(15, 23, 42, .06);
   --pg-shadow-card: 0 1px 2px rgba(15, 23, 42, .05);
-  --pg-radius: 14px;
 
+  margin: 0 auto; */
   max-width: 1280px;
-  margin: 0 auto;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; */
+  width: 100%;
+  margin-inline: auto;
   padding: 28px 24px 64px;
-  color: var(--pg-text);
+  /* color: var(--pg-text); */
 }
 
 html[data-theme='dark'] .pg-demos {
@@ -53,7 +58,7 @@ html[data-theme='dark'] .pg-demos {
   text-align: left;
   background: var(--pg-surface);
   border: 1.5px solid var(--pg-border);
-  border-radius: var(--pg-radius);
+  border-radius: var(--pg-radius, 6px);
   padding: 0;
   overflow: hidden;
   cursor: pointer;
@@ -61,6 +66,7 @@ html[data-theme='dark'] .pg-demos {
   transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
   font: inherit;
   color: inherit;
+  border: 1px solid #ddd;
 }
 .pg-card:hover { transform: translateY(-3px); box-shadow: var(--pg-shadow); }
 .pg-card.is-active {
@@ -236,4 +242,172 @@ html[data-theme='dark'] .pg-spark--down { color: #f87171; }
 
 @media (max-width: 720px) {
   .pg-demos .pg-grid { height: 480px; }
+}
+
+
+
+.employee-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+
+.employee-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.employee-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.employee-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.employee-email {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.employee-cell{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    height:100%;
+}
+
+.employee-avatar{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+}
+
+.employee-info{
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+}
+
+.employee-name{
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.employee-email{
+    font-size:12px;
+    color:#6b7280;
+}
+
+.country-cell{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.country-flag{
+    width:22px;
+    border-radius:3px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.08);
+}
+
+.dept-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.dept-blue{
+    background:#dbeafe;
+    color:#2563eb;
+}
+
+.dept-green{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.dept-purple{
+    background:#f3e8ff;
+    color:#7e22ce;
+}
+
+.dept-amber{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.dept-pink{
+    background:#fce7f3;
+    color:#be185d;
+}
+
+.dept-cyan{
+    background:#cffafe;
+    color:#0e7490;
+}
+
+.dept-slate{
+    background:#e2e8f0;
+    color:#475569;
+}
+
+.rating-cell{
+    color:#f59e0b;
+    letter-spacing:1px;
+}
+
+.rating-empty{
+    color:#d1d5db;
+}
+
+.salary-cell{
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+}
+
+.status-badge{
+    display:inline-flex;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.status-active{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.status-inactive{
+    background:#e5e7eb;
+    color:#4b5563;
+}
+
+.id-cell{
+    font-weight:600;
+    color:#64748b;
 }
