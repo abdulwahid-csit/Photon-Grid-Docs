@@ -1,39 +1,77 @@
 ---
 sidebar_position: 2
 title: "Registering Modules"
-description: "Learn how the Photon Grid CDN build ships every feature under the global PhotonGrid namespace, including GridCore, GridApi, GridEventType, themes, and ThemeManager."
-keywords: [photon grid, javascript data grid, photon grid modules, global namespace, umd build]
+description: "Photon Grid ships every feature in one bundle — reached through the global PhotonGrid namespace on the CDN, or through named imports in React, Angular, and Vue."
+keywords: [photon grid, javascript data grid, photon grid modules, global namespace, umd build, named imports]
 ---
 
 # Registering Modules
 
-Unlike grids that require you to register feature modules one by one, the Photon Grid CDN build is all-inclusive: every feature ships in a single UMD bundle exposed on the global `PhotonGrid` namespace. This guide shows you what lives on that global and how to access it.
+Unlike grids that require you to register feature modules one by one, Photon Grid is all-inclusive: every feature ships in a single bundle. In vanilla JS you reach features through the global `PhotonGrid` namespace; in React, Angular, and Vue you reach them through named imports from the wrapper package (or from `photon-grid-core`). This guide shows what is available and how to access it. Pick your framework in the tabs below — your choice is remembered across the whole documentation.
 
 ## Overview
 
-When you add the CDN script, there is nothing to register. Sorting, filtering, grouping, selection, editing, pagination, charts, and theming are already bundled and enabled through grid options. Instead of importing modules, you reach into the `PhotonGrid` global for the handful of exports you need.
+There is nothing to register. Sorting, filtering, grouping, selection, editing, pagination, charts, and theming are already bundled and enabled through grid options.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
+
+Add the CDN script; everything lives on the `PhotonGrid` global.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
 ```
 
-## The PhotonGrid global
+</TabItem>
+<TabItem value="react" label="React">
 
-After the script loads, `window.PhotonGrid` exposes these key members:
+Install the wrapper; import named exports where you need them.
 
-| Export | Purpose |
+```bash
+npm install photon-grid-react photon-grid-core
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+Install the wrapper; import named exports where you need them.
+
+```bash
+npm install photon-grid-angular photon-grid-core
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+Install the wrapper; import named exports where you need them.
+
+```bash
+npm install photon-grid-vue photon-grid-core
+```
+
+</TabItem>
+</FrameworkTabs>
+
+## The key members
+
+Whether you reach them through the global or through imports, these are the members you use most:
+
+| Member | Purpose |
 | --- | --- |
-| `PhotonGrid.GridCore` | The main grid class you construct. |
-| `PhotonGrid.createGrid` | A factory helper that builds a grid. |
-| `PhotonGrid.GridApi` | The API class; an instance is available as `grid.api`. |
-| `PhotonGrid.GridEventType` | An enum of event name constants. |
-| `PhotonGrid.lightTheme` | The built-in light theme object. |
-| `PhotonGrid.darkTheme` | The built-in dark theme object. |
-| `PhotonGrid.ThemeManager` | The theme manager class. |
+| `GridCore` | The main grid class you construct (vanilla). |
+| `createGrid` | A factory helper that builds a grid. |
+| `GridApi` | The API class; an instance is available via `grid.api` or the ready callback. |
+| `GridEventType` | An enum of event name constants. |
+| `lightTheme` | The built-in light theme object. |
+| `darkTheme` | The built-in dark theme object. |
+| `ThemeManager` | The theme manager class. |
 
 ## Accessing GridCore and GridApi
 
-You construct the grid with `PhotonGrid.GridCore` and read its API from `grid.api`, which is an instance of `PhotonGrid.GridApi`.
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
+
+Everything is a property of the `PhotonGrid` global.
 
 ```js
 const grid = new PhotonGrid.GridCore(
@@ -45,9 +83,45 @@ const api = grid.api;
 console.log(api instanceof PhotonGrid.GridApi); // true
 ```
 
-## Using GridEventType
+</TabItem>
+<TabItem value="react" label="React">
 
-`PhotonGrid.GridEventType` holds string constants for every event. You can subscribe with the constant or the raw string value; both are equivalent.
+The component comes from the wrapper; types and helpers come from the packages.
+
+```tsx
+import { PhotonGrid } from 'photon-grid-react';
+import type { GridApi, GridEventType } from 'photon-grid-core';
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+The component comes from the wrapper; types and helpers come from the packages.
+
+```ts
+import { PhotonGridComponent } from 'photon-grid-angular';
+import type { GridApi, GridEventType } from 'photon-grid-core';
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+The component comes from the wrapper; types and helpers come from the packages.
+
+```ts
+import { PhotonGrid } from 'photon-grid-vue';
+import type { GridApi, GridEventType } from 'photon-grid-vue';
+```
+
+</TabItem>
+</FrameworkTabs>
+
+## Subscribing to events
+
+`GridEventType` holds string constants for every event. You can subscribe with the constant or the raw string value; both are equivalent. In the wrappers, prefer the declarative event bindings (`onGridReady`, `@gridReady`, `(gridReady)`), but you can still call `api.on(...)` for any event.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
 
 ```js
 grid.api.on(PhotonGrid.GridEventType.GRID_READY, () => {
@@ -60,9 +134,42 @@ grid.api.on("grid:ready", () => {
 });
 ```
 
-## Accessing themes and ThemeManager
+</TabItem>
+<TabItem value="react" label="React">
 
-The built-in themes are plain objects you pass to the `theme` option or to `api.setTheme(theme)`. `PhotonGrid.ThemeManager` is available for advanced theme handling.
+```tsx
+<PhotonGrid columns={columns} dataSet={rowData} onGridReady={(api) => {
+  api.on('sort:changed', () => console.log('sorted'));
+}} />
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```ts
+onReady(api: GridApi): void {
+  api.on('sort:changed', () => console.log('sorted'));
+}
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```ts
+function onReady(api: GridApi) {
+  api.on('sort:changed', () => console.log('sorted'));
+}
+```
+
+</TabItem>
+</FrameworkTabs>
+
+## Themes and ThemeManager
+
+The built-in themes are plain objects you pass to the `theme` option or to `api.setTheme(theme)`.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
 
 ```js
 const grid = new PhotonGrid.GridCore(
@@ -78,9 +185,51 @@ const grid = new PhotonGrid.GridCore(
 grid.api.setTheme(PhotonGrid.lightTheme);
 ```
 
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+import { darkTheme, lightTheme } from 'photon-grid-core';
+
+<PhotonGrid
+  columns={columns}
+  dataSet={rowData}
+  options={{ theme: darkTheme }}
+  onGridReady={(api) => api.setTheme(lightTheme)}
+/>
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```ts
+import { darkTheme, lightTheme } from 'photon-grid-core';
+
+// options = { theme: darkTheme }
+onReady(api: GridApi): void {
+  api.setTheme(lightTheme);
+}
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```ts
+import { darkTheme, lightTheme } from 'photon-grid-core';
+
+const options = { theme: darkTheme };
+
+function onReady(api: GridApi) {
+  api.setTheme(lightTheme);
+}
+```
+
+</TabItem>
+</FrameworkTabs>
+
 ## Live Example
 
-The example below builds a grid using `PhotonGrid.darkTheme` via the `theme` option.
+The example below builds a grid using the dark theme via the `theme` option.
 
 <iframe
   src="/examples/registering-modules/index.html"
@@ -93,13 +242,13 @@ The example below builds a grid using `PhotonGrid.darkTheme` via the `theme` opt
 
 | Export / Method | Type | Description |
 | --- | --- | --- |
-| `PhotonGrid.GridCore` | `constructor` | Main grid class. |
-| `PhotonGrid.createGrid` | `function` | Factory helper for creating a grid. |
-| `PhotonGrid.GridApi` | `class` | API class; instance available as `grid.api`. |
-| `PhotonGrid.GridEventType` | `object` | Enum of event name constants. |
-| `PhotonGrid.lightTheme` | `object` | Built-in light theme. |
-| `PhotonGrid.darkTheme` | `object` | Built-in dark theme. |
-| `PhotonGrid.ThemeManager` | `class` | Theme manager class. |
+| `GridCore` | `constructor` | Main grid class (vanilla). |
+| `createGrid` | `function` | Factory helper for creating a grid. |
+| `GridApi` | `class` | API class; instance available via `grid.api` or the ready callback. |
+| `GridEventType` | `object` | Enum of event name constants. |
+| `lightTheme` | `object` | Built-in light theme. |
+| `darkTheme` | `object` | Built-in dark theme. |
+| `ThemeManager` | `class` | Theme manager class. |
 | `api.setTheme(theme)` | `method` | Applies a theme at runtime. |
 
 ## Related

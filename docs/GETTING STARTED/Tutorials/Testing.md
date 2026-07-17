@@ -15,7 +15,10 @@ Testing a grid comes down to three questions: did it finish initializing, does i
 
 ## Wait for grid:ready
 
-The grid initializes and renders asynchronously. Subscribe to `grid:ready` with `api.on` to run assertions once the grid is fully set up.
+The grid initializes and renders asynchronously. Wait for the ready signal before running assertions — subscribe to `grid:ready` in vanilla, or use the ready callback in the wrappers. Both hand you the `GridApi`.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
 
 ```js
 const grid = new PhotonGrid.GridCore(
@@ -29,6 +32,36 @@ api.on("grid:ready", () => {
   console.log("Grid is ready");
 });
 ```
+
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+<PhotonGrid columns={columns} dataSet={rowData} onGridReady={(api) => {
+  console.log("Grid is ready");
+}} />
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```ts
+onReady(api: GridApi): void {
+  console.log("Grid is ready");
+}
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```ts
+function onReady(api: GridApi) {
+  console.log("Grid is ready");
+}
+```
+
+</TabItem>
+</FrameworkTabs>
 
 ## Assert the displayed row count
 

@@ -11,32 +11,35 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Blazing-Fast Virtual Rendering',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Photon Grid virtualizes rows and columns so it renders only what is on
+        screen. Scroll through millions of records at a high, steady frame rate
+        with a tiny, zero-dependency core.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Every Feature Built In',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Sorting, filtering, grouping, cell editing, selection, pagination,
+        integrated charts, sparklines and theming all ship in one bundle — turn
+        them on through simple grid options, no add-ons required.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'React, Angular, Vue & Vanilla JS',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        One fast engine, four ways to use it. Drop in the vanilla CDN build or
+        install the official <code>photon-grid-react</code>,{' '}
+        <code>photon-grid-angular</code> or <code>photon-grid-vue</code> wrapper.
       </>
     ),
   },

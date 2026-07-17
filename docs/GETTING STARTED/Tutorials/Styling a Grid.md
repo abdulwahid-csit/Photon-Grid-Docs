@@ -27,6 +27,9 @@ If the container has no height, the grid has nowhere to draw its rows. A fixed p
 
 Control vertical density with `rowHeight` and `headerRowHeight`. Larger values give a more spacious layout; smaller values fit more rows on screen.
 
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
+
 ```js
 const grid = new PhotonGrid.GridCore(
   document.getElementById("grid"),
@@ -39,9 +42,48 @@ const grid = new PhotonGrid.GridCore(
 );
 ```
 
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+<PhotonGrid
+  columns={columns}
+  dataSet={rowData}
+  options={{ headerRowHeight: 52, rowHeight: 40 }}
+/>
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```html
+<photon-grid
+  [columns]="columns"
+  [dataSet]="rowData"
+  [options]="{ headerRowHeight: 52, rowHeight: 40 }">
+</photon-grid>
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```vue
+<PhotonGrid
+  :columns="columns"
+  :dataSet="rowData"
+  :options="{ headerRowHeight: 52, rowHeight: 40 }"
+/>
+```
+
+</TabItem>
+</FrameworkTabs>
+
 ## Applying a theme
 
-Photon Grid ships two built-in themes, `PhotonGrid.lightTheme` and `PhotonGrid.darkTheme`. Set one with the `theme` option.
+Photon Grid ships two built-in themes, `lightTheme` and `darkTheme`. Set one with the `theme` option. In vanilla JS they live on the `PhotonGrid` global; in the wrappers, import them from `photon-grid-core`.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
 
 ```js
 const grid = new PhotonGrid.GridCore(
@@ -54,9 +96,53 @@ const grid = new PhotonGrid.GridCore(
 );
 ```
 
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+import { lightTheme } from 'photon-grid-core';
+
+<PhotonGrid
+  columns={columns}
+  dataSet={rowData}
+  options={{ theme: lightTheme }}
+/>
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```ts
+import { lightTheme } from 'photon-grid-core';
+
+// [options]="{ theme: lightTheme }"
+options = { theme: lightTheme };
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```vue
+<script setup lang="ts">
+import { lightTheme } from 'photon-grid-core';
+
+const options = { theme: lightTheme };
+</script>
+
+<template>
+  <PhotonGrid :columns="columns" :dataSet="rowData" :options="options" />
+</template>
+```
+
+</TabItem>
+</FrameworkTabs>
+
 ## Switching themes at runtime
 
-Use `api.setTheme(theme)` to apply a specific theme, or `api.toggleDarkMode()` to flip between light and dark. This is ideal for a theme switch button in your toolbar.
+Use `api.setTheme(theme)` to apply a specific theme, or `api.toggleDarkMode()` to flip between light and dark. This is ideal for a theme switch button in your toolbar. The API methods are identical across frameworks; only how you obtain `api` differs.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
 
 ```js
 const api = grid.api;
@@ -67,6 +153,45 @@ api.setTheme(PhotonGrid.darkTheme);
 // Or toggle between light and dark:
 api.toggleDarkMode();
 ```
+
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+import { darkTheme } from 'photon-grid-core';
+
+const onReady = (api) => {
+  api.setTheme(darkTheme);   // apply a specific theme
+  api.toggleDarkMode();      // or toggle light/dark
+};
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```ts
+import { darkTheme } from 'photon-grid-core';
+
+onReady(api: GridApi): void {
+  api.setTheme(darkTheme);   // apply a specific theme
+  api.toggleDarkMode();      // or toggle light/dark
+}
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```ts
+import { darkTheme } from 'photon-grid-core';
+
+function onReady(api: GridApi) {
+  api.setTheme(darkTheme);   // apply a specific theme
+  api.toggleDarkMode();      // or toggle light/dark
+}
+```
+
+</TabItem>
+</FrameworkTabs>
 
 You can react to theme changes by listening for the `theme:changed` event.
 

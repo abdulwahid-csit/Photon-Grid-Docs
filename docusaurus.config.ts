@@ -4,9 +4,18 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// The canonical, public URL the site is served from. Used for canonical tags,
+// sitemap.xml, robots.txt and Open Graph / structured-data URLs. Keep this in
+// sync with the domain that actually serves the site in Vercel.
+const SITE_URL = 'https://photon-grid-docs.vercel.app';
+
+// Paste the token from Google Search Console → "HTML tag" verification here
+// (just the content value). Leave empty to skip. See README / SEO notes.
+const GOOGLE_SITE_VERIFICATION = '';
+
 const config: Config = {
   title: 'Photon Grid',
-  tagline: 'The high-performance JavaScript data grid for sorting, filtering, grouping, editing, charting and theming.',
+  tagline: 'The high-performance JavaScript data grid for React, Angular, Vue and vanilla JS — sorting, filtering, grouping, editing, charting and theming.',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -15,10 +24,14 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://photongrid.dev',
+  url: SITE_URL,
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
+
+  // Emit URLs without a trailing slash so canonicals, sitemap and the URLs
+  // Google indexes all agree (avoids duplicate-content ambiguity on Vercel).
+  trailingSlash: false,
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -32,6 +45,68 @@ const config: Config = {
       onBrokenMarkdownLinks: 'warn',
     },
   },
+
+  // <head> injections for SEO: structured data (JSON-LD) so Google can show a
+  // rich result for "Photon Grid", plus optional Search Console verification.
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Photon Grid',
+        alternateName: 'Photon Grid — JavaScript Data Grid',
+        url: SITE_URL,
+        description:
+          'Photon Grid is a fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS with sorting, filtering, grouping, editing, integrated charts and theming.',
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${SITE_URL}/docs?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      }),
+    },
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'Photon Grid',
+        applicationCategory: 'DeveloperApplication',
+        operatingSystem: 'Web, Windows, macOS, Linux',
+        description:
+          'A high-performance, zero-dependency JavaScript data grid with virtual scrolling, sorting, filtering, grouping, cell editing, pagination, integrated charts, sparklines and theming. Official wrappers for React, Angular and Vue.',
+        url: SITE_URL,
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        softwareVersion: '2.0.1',
+        author: {
+          '@type': 'Person',
+          name: 'Abdul Wahid',
+        },
+      }),
+    },
+    // Google Search Console verification — only emitted when the token is set.
+    ...(GOOGLE_SITE_VERIFICATION
+      ? [
+          {
+            tagName: 'meta',
+            attributes: {
+              name: 'google-site-verification',
+              content: GOOGLE_SITE_VERIFICATION,
+            },
+          },
+        ]
+      : []),
+  ],
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -81,14 +156,16 @@ const config: Config = {
       {
         name: 'keywords',
         content:
-          'photon grid, javascript data grid, js data grid, data table, sorting, filtering, grouping, cell editing, pagination, integrated charts, sparklines, theming',
+          'photon grid, photongrid, javascript data grid, js data grid, react data grid, angular data grid, vue data grid, data table, sorting, filtering, grouping, cell editing, pagination, integrated charts, sparklines, theming, virtual scrolling, ag grid alternative',
       },
       {
         name: 'description',
         content:
-          'Photon Grid is a fast, feature-rich JavaScript data grid with sorting, filtering, grouping, editing, selection, pagination, integrated charts, sparklines and theming.',
+          'Photon Grid is a fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS with sorting, filtering, grouping, editing, selection, pagination, integrated charts, sparklines and theming.',
       },
+      {name: 'author', content: 'Abdul Wahid'},
       {name: 'og:type', content: 'website'},
+      {name: 'og:site_name', content: 'Photon Grid'},
       {name: 'twitter:card', content: 'summary_large_image'},
     ],
     colorMode: {

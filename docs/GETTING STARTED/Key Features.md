@@ -1,23 +1,61 @@
 ---
 sidebar_position: 1
 title: "Key Features"
-description: "Explore the key features of Photon Grid, a high-performance JavaScript data grid with sorting, filtering, grouping, selection, editing, pagination, charts, and theming."
-keywords: [photon grid, javascript data grid, data grid features, sorting, filtering, virtual scrolling]
+description: "Explore the key features of Photon Grid — a high-performance data grid for vanilla JS, React, Angular, and Vue with sorting, filtering, grouping, selection, editing, pagination, charts, and theming."
+keywords: [photon grid, javascript data grid, react data grid, angular data grid, vue data grid, data grid features, sorting, filtering, virtual scrolling]
 ---
 
 # Key Features
 
-Photon Grid is a high-performance JavaScript data grid that packs sorting, filtering, grouping, selection, inline editing, pagination, integrated charts, theming, and virtual scrolling into a single lightweight bundle. This page gives you a high-level tour of what the grid can do before you dive into the individual guides.
+Photon Grid is a high-performance data grid that packs sorting, filtering, grouping, selection, inline editing, pagination, integrated charts, theming, and virtual scrolling into a single lightweight bundle — available for vanilla JS, React, Angular, and Vue. This page gives you a high-level tour before you dive into the individual guides.
 
 ## Overview
 
-Every Photon Grid feature is available from the same `PhotonGrid.GridCore` instance and its `grid.api` object. You turn features on through grid options and column definitions, then drive them at runtime through the API. Because the grid virtualizes rows and columns, these features stay fast even with large datasets.
+Every Photon Grid feature is available from the same core engine and its `GridApi`. You turn features on through grid options and column definitions, then drive them at runtime through the API. The runtime API is identical across frameworks — only how you obtain `api` differs (`grid.api` in vanilla, or the ready callback in React/Angular/Vue). Because the grid virtualizes rows and columns, these features stay fast even with large datasets.
 
-Use this page as a map: each section links to a dedicated guide where the feature is covered in depth.
+Use this page as a map: each section links to a dedicated guide where the feature is covered in depth. Pick your framework in the tabs below — your choice is remembered across the whole documentation.
+
+## Getting the grid API
+
+Almost every runtime example below calls a method on the grid's `api`. Here is how you obtain it in each framework.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
+
+```js
+const grid = new PhotonGrid.GridCore(el, { columns, data: rowData });
+const api = grid.api;
+```
+
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+<PhotonGrid columns={columns} dataSet={rowData} onGridReady={(api) => {
+  // use api here
+}} />
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```html
+<photon-grid [columns]="columns" [dataSet]="rowData" (gridReady)="onReady($event)"></photon-grid>
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```vue
+<PhotonGrid :columns="columns" :dataSet="rowData" @gridReady="onReady" />
+```
+
+</TabItem>
+</FrameworkTabs>
 
 ## Columns
 
-Columns are defined declaratively with a `field`, a `header`, and a stable `colId`. You control layout with `width`, `minWidth`, and `flex`, and behavior with flags such as `sortable`, `filter`, `editable`, `resizable`, and `pinned`.
+Columns are defined declaratively with a `field`, a `header`, and a stable `colId`. You control layout with `width`, `minWidth`, and `flex`, and behavior with flags such as `sortable`, `filter`, `editable`, `resizable`, and `pinned`. Column definitions are the same across every framework.
 
 ```js
 const columns = [
@@ -33,7 +71,7 @@ const columns = [
 Enable sorting per column with `sortable: true`, and drive it programmatically with `api.sortColumn(colId, dir)`, `api.multiSort(configs)`, and `api.clearSort()`.
 
 ```js
-grid.api.sortColumn("salary", "desc");
+api.sortColumn("salary", "desc");
 ```
 
 ## Filtering
@@ -41,7 +79,7 @@ grid.api.sortColumn("salary", "desc");
 Turn on column filters with `filter: true`, then filter data at runtime with `api.setColumnFilter(colId, model)` or the built-in quick filter `api.setQuickFilter(text)`.
 
 ```js
-grid.api.setQuickFilter("engineering");
+api.setQuickFilter("engineering");
 ```
 
 ## Grouping
@@ -49,12 +87,15 @@ grid.api.setQuickFilter("engineering");
 Group rows by any column with `api.groupByColumn(colId)` and expand or collapse groups with `api.expandAllGroups()` and `api.collapseAllGroups()`.
 
 ```js
-grid.api.groupByColumn("department");
+api.groupByColumn("department");
 ```
 
 ## Selection
 
 Configure selection with the `selection` option using `mode: "single"` or `mode: "multiple"`, and read the current selection with `api.getSelectedRows()` and `api.getSelectedCount()`.
+
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
 
 ```js
 const grid = new PhotonGrid.GridCore(el, {
@@ -63,6 +104,42 @@ const grid = new PhotonGrid.GridCore(el, {
   selection: { mode: "multiple" }
 });
 ```
+
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+<PhotonGrid
+  columns={columns}
+  dataSet={rowData}
+  options={{ selection: { mode: 'multiple' } }}
+/>
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```html
+<photon-grid
+  [columns]="columns"
+  [dataSet]="rowData"
+  [options]="{ selection: { mode: 'multiple' } }">
+</photon-grid>
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```vue
+<PhotonGrid
+  :columns="columns"
+  :dataSet="rowData"
+  :options="{ selection: { mode: 'multiple' } }"
+/>
+```
+
+</TabItem>
+</FrameworkTabs>
 
 ## Editing
 
@@ -76,6 +153,9 @@ Make cells editable with `editable: true` and choose an `editor` such as `"text"
 
 Turn on pagination with the `pagination` option and navigate with `api.goToPage(n)` and `api.setPageSize(n)`.
 
+<FrameworkTabs>
+<TabItem value="vanilla" label="Vanilla JS">
+
 ```js
 const grid = new PhotonGrid.GridCore(el, {
   columns,
@@ -83,6 +163,42 @@ const grid = new PhotonGrid.GridCore(el, {
   pagination: { enabled: true, pageSize: 100 }
 });
 ```
+
+</TabItem>
+<TabItem value="react" label="React">
+
+```tsx
+<PhotonGrid
+  columns={columns}
+  dataSet={rowData}
+  options={{ pagination: { enabled: true, pageSize: 100 } }}
+/>
+```
+
+</TabItem>
+<TabItem value="angular" label="Angular">
+
+```html
+<photon-grid
+  [columns]="columns"
+  [dataSet]="rowData"
+  [options]="{ pagination: { enabled: true, pageSize: 100 } }">
+</photon-grid>
+```
+
+</TabItem>
+<TabItem value="vue" label="Vue">
+
+```vue
+<PhotonGrid
+  :columns="columns"
+  :dataSet="rowData"
+  :options="{ pagination: { enabled: true, pageSize: 100 } }"
+/>
+```
+
+</TabItem>
+</FrameworkTabs>
 
 ## Charts
 
