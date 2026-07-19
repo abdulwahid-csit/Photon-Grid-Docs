@@ -169,9 +169,20 @@ const config: Config = {
           'Photon Grid is a fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS with sorting, filtering, grouping, editing, selection, pagination, integrated charts, sparklines and theming.',
       },
       {name: 'author', content: 'Abdul Wahid'},
-      {name: 'og:type', content: 'website'},
-      {name: 'og:site_name', content: 'Photon Grid'},
+      {property: 'og:type', content: 'website'},
+      {property: 'og:site_name', content: 'Photon Grid'},
+      {property: 'og:title', content: 'Photon Grid'},
+      {
+        property: 'og:description',
+        content:
+          'Photon Grid is a fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS.',
+      },
+      {property: 'og:url', content: 'https://photon-grid-docs.vercel.app'},
       {name: 'twitter:card', content: 'summary_large_image'},
+      {
+        name: 'google-site-verification',
+        content: 'ZPEag-Qaae5HpUIk7ee7dowgHVtKVBv-3_FgLOY6w8A',
+      },
     ],
     colorMode: {
       respectPrefersColorScheme: true,
