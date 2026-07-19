@@ -7,14 +7,29 @@ import type * as Preset from '@docusaurus/preset-classic';
 // The canonical, public URL the site is served from. Used for canonical tags,
 // sitemap.xml, robots.txt and Open Graph / structured-data URLs. Keep this in
 // sync with the domain that actually serves the site in Vercel.
+//
+// ⚠️ SEO NOTE: if you ever move to a custom domain (e.g. docs.photongrid.dev),
+// update this immediately AND add a redirect from the old Vercel domain, or
+// you will split link equity and create duplicate-content issues.
 const SITE_URL = 'https://photon-grid-docs.vercel.app';
 
 // Paste the token from Google Search Console → "HTML tag" verification here
-// (just the content value). Leave empty to skip. See README / SEO notes.
-const GOOGLE_SITE_VERIFICATION = '';
+// (just the content value). This is now the single source of truth for the
+// verification tag — it used to also be hardcoded in themeConfig.metadata,
+// which meant two conflicting <meta name="google-site-verification"> tags
+// could ship at once. Never duplicate this elsewhere.
+const GOOGLE_SITE_VERIFICATION = 'ZPEag-Qaae5HpUIk7ee7dowgHVtKVBv-3_FgLOY6w8A';
+
+// Absolute canonical share image, used for both og:image and twitter:image.
+// SVG is NOT reliably rendered by social crawlers (Facebook/LinkedIn/Slack/X
+// mostly ignore SVG og:images). Use a real raster image at the recommended
+// 1200x630 social-card size. Replace the file at static/img/social-card.png
+// with your actual artwork; the URL below just needs to keep pointing at it.
+const SOCIAL_CARD_IMAGE = `${SITE_URL}/img/social-card.png`;
 
 const config: Config = {
   title: 'Photon Grid',
+  titleDelimiter: '|',
   tagline: 'The high-performance JavaScript data grid for React, Angular, Vue and vanilla JS — sorting, filtering, grouping, editing, charting and theming.',
   favicon: 'img/logo.svg',
 
@@ -38,7 +53,12 @@ const config: Config = {
   organizationName: 'photon-grid', // Usually your GitHub org/user name.
   projectName: 'photon-grid-docs', // Usually your repo name.
 
-  onBrokenLinks: 'warn',
+  // SEO: broken internal links (bad hrefs, dead anchors) hurt both crawl
+  // budget and user trust signals. 'warn' lets them silently ship to prod.
+  // Now that the footer/navbar links below have been fixed, fail the build
+  // instead of shipping broken links.
+  onBrokenLinks: 'throw',
+  onBrokenAnchors: 'throw',
 
   // Runs early on the client. Debounces ResizeObserver callbacks to a frame so
   // the benign "ResizeObserver loop" warning never fires (webpack-dev-server
@@ -47,12 +67,12 @@ const config: Config = {
 
   markdown: {
     hooks: {
-      onBrokenMarkdownLinks: 'warn',
+      onBrokenMarkdownLinks: 'throw',
     },
   },
 
   // <head> injections for SEO: structured data (JSON-LD) so Google can show a
-  // rich result for "Photon Grid", plus optional Search Console verification.
+  // rich result for "Photon Grid", plus Search Console verification.
   headTags: [
     {
       tagName: 'script',
@@ -99,7 +119,21 @@ const config: Config = {
         },
       }),
     },
-    // Google Search Console verification — only emitted when the token is set.
+    // New: Organization schema. Helps Google associate the logo with the
+    // brand for knowledge-panel / sitelinks-searchbox eligibility.
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Photon Grid',
+        url: SITE_URL,
+        logo: `${SITE_URL}/img/logo.svg`,
+      }),
+    },
+    // Google Search Console verification — single source of truth, driven by
+    // the GOOGLE_SITE_VERIFICATION constant above.
     ...(GOOGLE_SITE_VERIFICATION
       ? [
           {
@@ -111,6 +145,15 @@ const config: Config = {
           },
         ]
       : []),
+    // Explicit robots directive at the head level (belt-and-suspenders with
+    // static/robots.txt — see note at bottom of file).
+    {
+      tagName: 'meta',
+      attributes: {
+        name: 'robots',
+        content: 'index, follow, max-image-preview:large',
+      },
+    },
   ],
 
   // Even if you don't use internationalization, you can use this field to set
@@ -129,6 +172,9 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           routeBasePath: 'docs',
           showLastUpdateTime: true,
+          // Lets crawlers/users jump straight to the source on GitHub —
+          // also a mild trust/E-E-A-T signal. Point this at your real repo.
+          editUrl: 'https://github.com/photon-grid/photon-grid-docs/edit/main/',
         },
         blog: {
           showReadingTime: true,
@@ -147,16 +193,24 @@ const config: Config = {
         sitemap: {
           changefreq: 'weekly',
           priority: 0.5,
-          ignorePatterns: ['/tags/**'],
+          ignorePatterns: ['/tags/**', '/search'],
           filename: 'sitemap.xml',
         },
+        // Generates a Google-Analytics-friendly, SEO-correct gtag setup only
+        // if you actually have an ID — no-op otherwise. Uncomment and set a
+        // real measurement ID if/when you add analytics.
+        // gtag: {
+        //   trackingID: 'G-XXXXXXXXXX',
+        //   anonymizeIP: true,
+        // },
       } satisfies Preset.Options,
     ],
   ],
 
   themeConfig: {
-    // Social/share card (og:image, twitter image) — uses the Photon Grid logo.
-    image: 'img/logo.svg',
+    // Social/share card (og:image, twitter image). Use a real PNG, not SVG —
+    // most social crawlers won't render SVG previews. See SOCIAL_CARD_IMAGE.
+    image: 'img/social-card.png',
     metadata: [
       {
         name: 'keywords',
@@ -169,20 +223,39 @@ const config: Config = {
           'Photon Grid is a fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS with sorting, filtering, grouping, editing, selection, pagination, integrated charts, sparklines and theming.',
       },
       {name: 'author', content: 'Abdul Wahid'},
+
+      // Open Graph — was missing image dimensions and locale, both of which
+      // Facebook/LinkedIn use to pick the right crop and avoid a slow
+      // "fetching preview" delay.
       {property: 'og:type', content: 'website'},
       {property: 'og:site_name', content: 'Photon Grid'},
-      {property: 'og:title', content: 'Photon Grid'},
+      {property: 'og:title', content: 'Photon Grid — JavaScript Data Grid for React, Angular & Vue'},
       {
         property: 'og:description',
         content:
-          'Photon Grid is a fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS.',
+          'Fast, zero-dependency JavaScript data grid with sorting, filtering, grouping, editing, integrated charts and theming. Official React, Angular and Vue wrappers.',
       },
-      {property: 'og:url', content: 'https://photon-grid-docs.vercel.app'},
+      {property: 'og:url', content: SITE_URL},
+      {property: 'og:image', content: SOCIAL_CARD_IMAGE},
+      {property: 'og:image:width', content: '1200'},
+      {property: 'og:image:height', content: '630'},
+      {property: 'og:image:alt', content: 'Photon Grid — JavaScript data grid'},
+      {property: 'og:locale', content: 'en_US'},
+
+      // Twitter/X card — previously only twitter:card was set, so X fell
+      // back to whatever og: tags happened to match, which is unreliable.
       {name: 'twitter:card', content: 'summary_large_image'},
+      {name: 'twitter:title', content: 'Photon Grid — JavaScript Data Grid'},
       {
-        name: 'google-site-verification',
-        content: 'ZPEag-Qaae5HpUIk7ee7dowgHVtKVBv-3_FgLOY6w8A',
+        name: 'twitter:description',
+        content:
+          'Fast, feature-rich JavaScript data grid for React, Angular, Vue and vanilla JS.',
       },
+      {name: 'twitter:image', content: SOCIAL_CARD_IMAGE},
+
+      // Note: the old hardcoded google-site-verification meta entry was
+      // removed from here — it's now emitted once, from headTags above,
+      // driven by the GOOGLE_SITE_VERIFICATION constant.
     ],
     colorMode: {
       respectPrefersColorScheme: true,
@@ -248,39 +321,41 @@ const config: Config = {
               label: 'Blog',
               to: '/blog',
             },
+            // Fixed: these two previously pointed at /blog instead of the
+            // actual pages. Mislabeled internal links confuse both users
+            // and crawlers about page purpose/anchor-text relevance.
             {
               label: 'API',
-              to: '/blog',
+              to: '/api',
             },
             {
               label: 'Contact',
-              to: '/blog',
+              to: '/contact',
             },
           ],
         },
         {
           title: 'Sites',
           items: [
+            // Fixed: was pointing at the npm URL under a "Github" label —
+            // wrong destination for the anchor text, which is both a UX
+            // problem and a minor relevance/trust signal issue for crawlers.
+            // Replace with your real GitHub org/repo URL.
             {
               label: 'Github',
-              href: 'https://www.npmjs.com/package/photon-grid-core',
-            },
-            {
-              label: 'Youtube',
-              to: '/blog',
+              href: 'https://github.com/photon-grid/photon-grid-core',
             },
             {
               label: 'LinkedIn',
               href: 'https://www.linkedin.com/company/photon-grid',
             },
-            {
-              label: 'Facebook',
-              to: '/blog',
-            },
-            {
-              label: 'X',
-              to: '/blog',
-            },
+            // Fixed: Youtube, Facebook and X previously linked to /blog,
+            // which is a broken/misleading destination for those labels.
+            // They're removed here rather than left dangling — add them
+            // back with real profile URLs once those accounts exist.
+            // {label: 'Youtube', href: 'https://youtube.com/@photon-grid'},
+            // {label: 'Facebook', href: 'https://facebook.com/photon-grid'},
+            // {label: 'X', href: 'https://x.com/photon_grid'},
           ],
         },
       ],
@@ -294,3 +369,20 @@ const config: Config = {
 };
 
 export default config;
+
+// ─────────────────────────────────────────────────────────────────────────
+// ONE THING THIS FILE CAN'T FIX: static/robots.txt
+// Docusaurus's classic-preset `sitemap` option only emits sitemap.xml — it
+// does NOT generate a robots.txt. Make sure you have a
+// `static/robots.txt` containing at least:
+//
+//   User-agent: *
+//   Allow: /
+//   Sitemap: https://photon-grid-docs.vercel.app/sitemap.xml
+//
+// Without it, crawlers have no explicit pointer to your sitemap and no
+// explicit "allow all" — most will still crawl fine, but this is a standard
+// checklist item for a 10/10 technical-SEO audit. Also confirm
+// static/img/social-card.png (1200x630 PNG) actually exists — it's
+// referenced above but wasn't in the original config.
+// ─────────────────────────────────────────────────────────────────────────
