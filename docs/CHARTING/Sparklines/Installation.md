@@ -18,7 +18,7 @@ The sparkline renderer is part of the single `PhotonGrid` bundle, so you do not 
 Include the standard Photon Grid bundle.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js"></script>
 ```
 
 ## Enable the sparkline option

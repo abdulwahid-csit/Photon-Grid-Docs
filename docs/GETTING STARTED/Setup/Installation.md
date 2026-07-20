@@ -26,7 +26,7 @@ Pick your framework in the tabs below — your choice is remembered across the w
 Add the Photon Grid script to the `<head>` of your page. This is the primary installation method and requires no build step.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js"></script>
 ```
 
 After the script loads, `PhotonGrid` is available on the global `window` object:

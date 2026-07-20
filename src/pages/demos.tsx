@@ -21,7 +21,7 @@ type Demo = {
 
 const DEMOS = DEMOS_RAW as unknown as Demo[];
 
-const CDN = 'https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js';
+const CDN = 'https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js';
 
 // Load the PhotonGrid UMD bundle once and resolve the global.
 function loadPhoton(): Promise<any> {

@@ -19,7 +19,7 @@ There is nothing to register. Sorting, filtering, grouping, selection, editing, 
 Add the CDN script; everything lives on the `PhotonGrid` global.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js"></script>
 ```
 
 </TabItem>

@@ -18,7 +18,7 @@ Everything you need for integrated charting lives inside the single UMD bundle e
 Include the Photon Grid bundle. This is the same script used everywhere else in these docs.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js"></script>
 ```
 
 ## Enable the chart option

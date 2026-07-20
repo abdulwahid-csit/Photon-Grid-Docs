@@ -21,7 +21,7 @@ A Photon Grid needs three things: somewhere to render, a set of column definitio
 Include the CDN build and add a sized container element.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js"></script>
 
 <div id="grid" style="width:100%;height:460px;"></div>
 ```

@@ -16,7 +16,7 @@ This guide shows how to create your first Photon Grid. Pick your framework in th
 Add the Photon Grid script to your page.
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@2.0.1/photon-grid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photon-grid-core@latest/photon-grid.min.js"></script>
 ```
 
 Then add a sized container element:
