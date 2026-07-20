@@ -610,6 +610,250 @@ function buildFinance() {
   return { columns: columns, data: rows, options: { rowHeight: 52 } };
 }
 
+
+
+// Skeleton buildMasterDetail() for Photon Grid.
+// Replace or extend renderer CSS classes to match your project.
+
+function buildMasterDetail() {
+  var rng = mulberry32(404);
+
+  var CUSTOMERS = [
+    "John Smith","Emma Wilson","Sophia Brown","Michael Johnson","Olivia Davis",
+    "James Taylor","Charlotte White","Lucas Moore","Daniel Miller","Ava Martin"
+  ];
+  var REPS = ["Emma","David","Sarah","Alex","Noah","Sophia"];
+  var COUNTRIES = [
+    ["United States","🇺🇸"],["Canada","🇨🇦"],["Germany","🇩🇪"],
+    ["United Kingdom","🇬🇧"],["Japan","🇯🇵"],["Australia","🇦🇺"]
+  ];
+  var STATUS = [
+    {value:"Delivered",label:"Delivered",color:"#16a34a"},
+    {value:"Processing",label:"Processing",color:"#2563eb"},
+    {value:"Pending",label:"Pending",color:"#f59e0b"},
+    {value:"Cancelled",label:"Cancelled",color:"#dc2626"}
+  ];
+  var PAYMENT = [
+    {value:"Paid",label:"Paid",color:"#16a34a"},
+    {value:"Pending",label:"Pending",color:"#f59e0b"},
+    {value:"Refunded",label:"Refunded",color:"#7c3aed"}
+  ];
+  var PRIORITY = [
+    {value:"Low",label:"Low",color:"#94a3b8"},
+    {value:"Medium",label:"Medium",color:"#2563eb"},
+    {value:"High",label:"High",color:"#ea580c"},
+    {value:"Critical",label:"Critical",color:"#dc2626"}
+  ];
+
+  var rows = Array.from({length:300}, function(_,i){
+    var c = pick(rng,CUSTOMERS);
+    var country = pick(rng,COUNTRIES);
+    return {
+  id: i + 1,
+  orderNo: "ORD-" + (10000 + i),
+  customer: c,
+  email: c.toLowerCase().replace(/\s+/g, '.') + "@example.com",
+  avatar: "https://i.pravatar.cc/80?img=" + ((i % 70) + 1),
+  salesRep: pick(rng, REPS),
+  status: pick(rng, STATUS).value,
+  payment: pick(rng, PAYMENT).value,
+  priority: pick(rng, PRIORITY).value,
+  country: country[0],
+  flag: country[1],
+  orderDate: new Date(
+    2026,
+    intBetween(rng, 0, 11),
+    intBetween(rng, 1, 28)
+  ).toISOString(),
+  items: intBetween(rng, 1, 12),
+  total: Math.round(between(rng, 120, 6000) * 100) / 100,
+  progress: intBetween(rng, 5, 100),
+
+  detail: {
+    products: Array.from(
+      { length: intBetween(rng, 2, 30) },
+      function (_, index) {
+        var PRODUCTS = [
+          "iPhone 16 Pro",
+          "AirPods Pro",
+          "Apple Watch Ultra",
+          "MacBook Pro 16",
+          "Magic Keyboard",
+          "Magic Mouse",
+          "iPad Air",
+          "Samsung S25 Ultra",
+          "Galaxy Buds Pro",
+          "Dell XPS 15",
+          "Surface Laptop",
+          "Sony WH-1000XM5",
+          "Logitech MX Master 3S",
+          "LG UltraFine Monitor",
+          "USB-C Dock"
+        ];
+
+        var name = pick(rng, PRODUCTS);
+        var qty = intBetween(rng, 1, 5);
+        var price = Math.round(between(rng, 49, 2499) * 100) / 100;
+
+        return {
+          id: index + 1,
+          sku: "SKU-" + intBetween(rng, 10000, 99999),
+          name: name,
+          qty: qty,
+          price: price,
+          discount: intBetween(rng, 0, 25),
+          total: +(qty * price).toFixed(2)
+        };
+      }
+    ),
+
+    shipping: {
+      carrier: pick(rng, [
+        "DHL",
+        "FedEx",
+        "UPS",
+        "USPS",
+        "Aramex"
+      ]),
+      tracking: "TRK-" + intBetween(rng, 10000000, 99999999)
+    },
+
+    notes: "Customer requested signature on delivery."
+  }
+};
+  });
+
+  var columns = [
+    {
+      field:"orderNo",
+      header:"Order",
+      colId:"order",
+      type:"custom",
+      width: 210,
+      minWidth: 210,
+      renderer:{
+        display:function(p){
+          var d=document.createElement("div");
+          d.className="employee-cell";
+          d.innerHTML='<div class="employee-avatar assets-image" style="display:flex;align-items:center;justify-content:center;background:#2563eb;color:#fff">📦</div><div class="employee-info"><div class="employee-name">'+p.row.orderNo+'</div><div class="employee-email">'+p.row.items+' Items</div></div>';
+          return d;
+        }
+      }
+    },
+    {
+      field:"customer",
+      header:"Customer",
+      colId:"customer",
+      type:"custom",
+      width: 250,
+      minWidth: 250,
+      renderer:{
+        display:function(p){
+          var d=document.createElement("div");
+          d.className="employee-cell";
+          d.innerHTML='<img class="employee-avatar" src="'+p.row.avatar+'"><div class="employee-info"><div class="employee-name">'+p.row.customer+'</div><div class="employee-email">'+p.row.email+'</div></div>';
+          return d;
+        }
+      }
+    },
+    {field:"country",header:"Country",colId:"country",type:"string"},
+    {field:"salesRep",header:"Sales Rep",colId:"rep",type:"string"},
+    {field:"status",header:"Status",colId:"status",type:"dropdown",dropdownOptions:STATUS},
+    {field:"priority",header:"Priority",colId:"priority",type:"dropdown",dropdownOptions:PRIORITY},
+    {field:"payment",header:"Payment",colId:"payment",type:"dropdown",dropdownOptions:PAYMENT},
+    {field:"orderDate",header:"Order Date",colId:"date",type:"date"},
+    {field:"items",header:"Items",colId:"items",type:"number",showSummary:true,summaryAggregation:"sum"},
+    {field:"total",header:"Total",colId:"total",type:"currency",showSummary:true,summaryAggregation:"sum",aggFunc:"sum"},
+    {
+      field:"progress",
+      header:"Progress",
+      colId:"progress",
+      type:"custom",
+      width:180,
+      renderer:{
+        display:function(p){
+          var outer=document.createElement("div");
+          outer.style.width="100%";
+          outer.innerHTML='<div style="height:8px;background:#e5e7eb;border-radius:999px"><div style="height:8px;width:'+p.value+'%;background:#2563eb;border-radius:999px"></div></div><div style="font-size:11px;margin-top:4px">'+p.value+'%</div>';
+          return outer;
+        }
+      }
+    }
+  ];
+
+  return {
+  columns,
+  data: rows,
+  options: {
+    rowHeight: 80,
+    pagination: {
+      enabled: true,
+      pageSize: 50
+    },
+
+    masterDetail: {
+      enabled: true,
+
+      toggleColumnId: "order",
+
+      hasDetail(rowData) {
+        return !!rowData.detail;
+      },
+
+      getDetailData(rowData) {
+        return rowData.detail.products;
+      },
+
+      detailGrid: {
+        rowHeight: 42,
+
+        columns: [
+          {
+            field: "sku",
+            header: "SKU",
+            colId: "sku",
+            type: "string",
+            width: 120
+          },
+          {
+            field: "name",
+            header: "Product",
+            colId: "name",
+            type: "string",
+            flex: 1
+          },
+          {
+            field: "qty",
+            header: "Qty",
+            colId: "qty",
+            type: "number",
+            width: 90
+          },
+          {
+            field: "price",
+            header: "Price",
+            colId: "price",
+            type: "currency",
+            width: 130
+          }
+        ]
+      },
+
+      defaultExpanded: false,
+
+      detailAutoHeight: false,
+
+      lazy: false,
+
+      detailFixedHeight: 300,
+      detailMaxHeight: 300,
+      detailMinHeight: 300,
+    }
+  }
+};
+}
+
+
 /* ============================================================
    DEMO 3 — Orders (e-commerce)
    ============================================================ */
@@ -1005,11 +1249,612 @@ function buildProjects() {
    Demo registry (metadata + build fn, with precomputed counts)
    ============================================================ */
 export var DEMOS = [
-  { id: "employees", title: "Employees", glyph: "👥", desc: "HR directory with avatars, country flags, department badges & star ratings.", c1: "#3b82f6", c2: "#8b5cf6", build: buildEmployees },
-  { id: "finance", title: "Finance", glyph: "📈", desc: "Stock watchlist with ticker chips, colored change % and trend sparklines.", c1: "#10b981", c2: "#0ea5e9", build: buildFinance },
-  { id: "orders", title: "Orders", glyph: "🛒", desc: "E-commerce orders with payment marks, status pills & fulfillment progress.", c1: "#f59e0b", c2: "#ef4444", build: buildOrders },
-  { id: "projects", title: "Projects", glyph: "🗂️", desc: "Project tracker with priority, progress bars and stacked team avatars.", c1: "#8b5cf6", c2: "#ec4899", build: buildProjects }
+  {
+    id: "employees",
+    title: "Employees",
+    glyph: "👥",
+    desc: "HR directory with avatars, country flags, department badges & star ratings.",
+    c1: "#3b82f6",
+    c2: "#8b5cf6",
+    build: buildEmployees
+  },
+  {
+    id: "finance",
+    title: "Finance",
+    glyph: "📈",
+    desc: "Stock watchlist with ticker chips, colored change % and trend sparklines.",
+    c1: "#10b981",
+    c2: "#0ea5e9",
+    build: buildFinance
+  },
+  {
+    id: "orders",
+    title: "Orders",
+    glyph: "🛒",
+    desc: "E-commerce orders with payment marks, status pills & fulfillment progress.",
+    c1: "#f59e0b",
+    c2: "#ef4444",
+    build: buildOrders
+  },
+  {
+    id: "projects",
+    title: "Projects",
+    glyph: "🗂️",
+    desc: "Project tracker with priority, progress bars and stacked team avatars.",
+    c1: "#8b5cf6",
+    c2: "#ec4899",
+    build: buildProjects
+  },
+  {
+    id: "master-detail",
+    title: "Master Detail",
+    glyph: "📑",
+    desc: "Expand parent rows to reveal nested order details, products and customer information.",
+    c1: "#2563eb",
+    c2: "#1d4ed8",
+    build: buildMasterDetail
+  },
+  {
+    id: "tree-data",
+    title: "Tree Data",
+    glyph: "🌳",
+    desc: "Interactive organization hierarchy with expandable departments, managers and employees in a multi-level tree.",
+    c1: "#059669",
+    c2: "#0ea5e9",
+    build: buildTreeData
+  }
 ];
+
+
+function buildTreeData() {
+
+  // ---------- Seeded RNG helpers ----------
+  function mulberry32(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function pick(rng, arr) {
+    return arr[Math.floor(rng() * arr.length)];
+  }
+
+  function intBetween(rng, min, max) {
+    return Math.floor(rng() * (max - min + 1)) + min;
+  }
+
+  var rng = mulberry32(505);
+
+  // ---------- Static data ----------
+  var FIRST_NAMES = [
+    "James","John","Robert","Michael","William","David","Richard","Joseph",
+    "Thomas","Charles","Christopher","Daniel","Matthew","Anthony","Mark",
+    "Donald","Steven","Paul","Andrew","Joshua","Kevin","Brian","George",
+    "Edward","Ronald","Timothy","Jason","Jeffrey","Ryan","Jacob","Emma",
+    "Olivia","Sophia","Isabella","Charlotte","Amelia","Mia","Harper",
+    "Evelyn","Abigail","Emily","Elizabeth","Avery","Ella","Scarlett",
+    "Grace","Chloe","Victoria","Lily","Hannah","Aria","Nora","Zoe"
+  ];
+
+  var LAST_NAMES = [
+    "Smith","Johnson","Williams","Brown","Jones","Garcia","Miller",
+    "Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez",
+    "Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin",
+    "Lee","Perez","Thompson","White","Harris","Sanchez","Clark",
+    "Lewis","Robinson","Walker","Young","Allen","King","Scott",
+    "Green","Baker","Nelson","Hill","Campbell","Mitchell"
+  ];
+
+  var COUNTRIES = [
+    ["United States","🇺🇸"],
+    ["Canada","🇨🇦"],
+    ["Germany","🇩🇪"],
+    ["United Kingdom","🇬🇧"],
+    ["France","🇫🇷"],
+    ["Australia","🇦🇺"],
+    ["Japan","🇯🇵"],
+    ["Pakistan","🇵🇰"],
+    ["India","🇮🇳"],
+    ["Singapore","🇸🇬"]
+  ];
+
+  var CITIES = {
+    "United States":["New York","Seattle","Austin","Chicago"],
+    "Canada":["Toronto","Vancouver","Ottawa"],
+    "Germany":["Berlin","Munich","Hamburg"],
+    "United Kingdom":["London","Manchester"],
+    "France":["Paris","Lyon"],
+    "Australia":["Sydney","Melbourne"],
+    "Japan":["Tokyo","Osaka"],
+    "Pakistan":["Lahore","Islamabad","Karachi"],
+    "India":["Delhi","Bangalore","Mumbai"],
+    "Singapore":["Singapore"]
+  };
+
+  var STATUS = [
+    {value:"Active",label:"Active",color:"#16a34a"},
+    {value:"Vacation",label:"Vacation",color:"#f59e0b"},
+    {value:"Remote",label:"Remote",color:"#2563eb"},
+    {value:"Leave",label:"Leave",color:"#dc2626"}
+  ];
+
+  var EMPLOYMENT_TYPES = ["Permanent","Contract"];
+
+  var PAYMENT_METHODS = ["Check","Bank Transfer","Cash"];
+
+  var DEPARTMENT_COLORS = {
+    "Executive":        {dot:"#2563eb", text:"#1d4ed8", bg:"#eff6ff", border:"#bfdbfe"},
+    "Engineering":       {dot:"#7c3aed", text:"#6d28d9", bg:"#f5f3ff", border:"#ddd6fe"},
+    "Finance":           {dot:"#16a34a", text:"#15803d", bg:"#f0fdf4", border:"#bbf7d0"},
+    "Operations":        {dot:"#f59e0b", text:"#b45309", bg:"#fffbeb", border:"#fde68a"},
+    "Human Resources":   {dot:"#db2777", text:"#be185d", bg:"#fdf2f8", border:"#fbcfe8"},
+    "Sales":             {dot:"#0d9488", text:"#0f766e", bg:"#f0fdfa", border:"#99f6e4"}
+  };
+
+  var DEFAULT_DEPARTMENT_COLOR = {dot:"#64748b", text:"#334155", bg:"#f8fafc", border:"#e2e8f0"};
+
+  var COMPANY = {
+    title:"Chief Executive Officer",
+    department:"Executive",
+    children:[
+      { title:"Executive Assistant", department:"Executive" },
+      {
+        title:"Chief Technology Officer",
+        department:"Engineering",
+        children:[
+          {
+            title:"Engineering Director",
+            department:"Engineering",
+            children:[
+              { title:"Frontend Manager", department:"Engineering" },
+              { title:"Backend Manager", department:"Engineering" },
+              { title:"DevOps Manager", department:"Engineering" },
+              { title:"QA Manager", department:"Engineering" },
+              { title:"Security Manager", department:"Engineering" }
+            ]
+          }
+        ]
+      },
+      { title:"Chief Financial Officer", department:"Finance" },
+      { title:"Chief Operating Officer", department:"Operations" },
+      { title:"HR Director", department:"Human Resources" },
+      { title:"Sales Director", department:"Sales" }
+    ]
+  };
+
+  // Titles used for automatically generated teams
+  var TEAM_STRUCTURE = {
+    'Frontend Manager': [
+      'Frontend Team Lead','Senior Frontend Engineer','Frontend Engineer',
+      'Junior Frontend Engineer','UI/UX Designer'
+    ],
+    'Backend Manager': [
+      'Backend Team Lead','Senior Backend Engineer','Backend Engineer',
+      'Backend Engineer','Database Engineer'
+    ],
+    'DevOps Manager': [
+      'DevOps Team Lead','Senior DevOps Engineer','DevOps Engineer',
+      'Cloud Engineer','Site Reliability Engineer'
+    ],
+    'QA Manager': [
+      'QA Team Lead','Senior QA Engineer','QA Engineer',
+      'Automation Engineer','Performance Test Engineer'
+    ],
+    'Security Manager': [
+      'Security Team Lead','Senior Security Engineer','Security Engineer',
+      'SOC Analyst','Compliance Specialist'
+    ],
+    'Sales Director': [
+      'Regional Sales Manager','Account Executive','Sales Executive',
+      'Customer Success Manager','Business Development Representative'
+    ],
+    'HR Director': [
+      'HR Manager','Recruiter','HR Business Partner',
+      'Training Specialist','People Operations Specialist'
+    ],
+    'Chief Financial Officer': [
+      'Finance Manager','Senior Accountant','Accountant',
+      'Payroll Specialist','Procurement Specialist'
+    ],
+    'Chief Operating Officer': [
+      'Operations Manager','Warehouse Manager','Logistics Manager',
+      'Supply Chain Analyst','Operations Coordinator'
+    ]
+  };
+
+  var nextId = 1;
+  var rows = [];
+
+  // ---------- Employee generator ----------
+  function randomEmployee(title, department) {
+    var first = pick(rng, FIRST_NAMES);
+    var last = pick(rng, LAST_NAMES);
+    var country = pick(rng, COUNTRIES);
+
+    return {
+      employeeId: intBetween(rng, 100000, 999999),
+      name: first + " " + last,
+      title: title,
+      department: department,
+      email: first.toLowerCase() + "." + last.toLowerCase() + "@photongrid.dev",
+      linkedin: "https://linkedin.com/in/" + first.toLowerCase() + last.toLowerCase(),
+      avatar: "https://i.pravatar.cc/80?img=" + intBetween(rng, 1, 70),
+      phone: "+1 555 " + intBetween(rng, 100, 999) + "-" + intBetween(rng, 1000, 9999),
+      country: country[0],
+      flag: country[1],
+      location: pick(rng, CITIES[country[0]]),
+      employmentType: pick(rng, EMPLOYMENT_TYPES),
+      paymentMethod: pick(rng, PAYMENT_METHODS),
+      salary: intBetween(rng, 45000, 250000),
+      performance: intBetween(rng, 60, 100),
+      experience: intBetween(rng, 1, 18),
+      status: pick(rng, STATUS).value,
+      hireDate: new Date(
+        intBetween(rng, 2015, 2025),
+        intBetween(rng, 0, 11),
+        intBetween(rng, 1, 28)
+      ).toISOString()
+    };
+  }
+
+  function addEmployee(title, department, parentId) {
+    var emp = randomEmployee(title, department);
+    emp.id = nextId++;
+    emp.parentId = parentId;
+    rows.push(emp);
+    return emp.id;
+  }
+
+  // Recursively build the fixed leadership tree
+  function buildHierarchy(node, parentId) {
+    var id = addEmployee(node.title, node.department, parentId);
+    if (node.children) {
+      node.children.forEach(function (child) {
+        buildHierarchy(child, id);
+      });
+    }
+    return id;
+  }
+
+  // Generate realistic teams under managers
+  function generateTeam(managerRow) {
+    var templates = TEAM_STRUCTURE[managerRow.title];
+    if (!templates) return;
+
+    var directReports = intBetween(rng, 3, 8);
+
+    for (var i = 0; i < directReports; i++) {
+      var title = templates[i % templates.length];
+      var childId = addEmployee(title, managerRow.department, managerRow.id);
+
+      // Team leads get their own engineers
+      if (title.indexOf('Team Lead') >= 0) {
+        var engineers = intBetween(rng, 4, 12);
+        for (var j = 0; j < engineers; j++) {
+          addEmployee(
+            pick(rng, [
+              'Senior Software Engineer','Software Engineer',
+              'Software Engineer','QA Engineer','UI Engineer'
+            ]),
+            managerRow.department,
+            childId
+          );
+        }
+      }
+
+      // Senior engineers may mentor 1-3 engineers
+      if (title.indexOf('Senior') >= 0) {
+        var mentees = intBetween(rng, 1, 3);
+        for (var k = 0; k < mentees; k++) {
+          addEmployee(
+            pick(rng, [
+              'Software Engineer','Frontend Engineer',
+              'Backend Engineer','QA Engineer'
+            ]),
+            managerRow.department,
+            childId
+          );
+        }
+      }
+    }
+  }
+
+  // ---------- Build the organization ----------
+
+  // Step 1: create the executive hierarchy
+  buildHierarchy(COMPANY, null);
+
+  // Step 2: generate large teams under managers/directors
+  rows
+    .filter(function (r) {
+      return (
+        r.title.indexOf('Manager') >= 0 ||
+        r.title.indexOf('Director') >= 0 ||
+        r.title.indexOf('Officer') >= 0
+      );
+    })
+    .forEach(generateTeam);
+
+  // Step 3: add a few interns and contractors randomly
+  var engineeringManagers = rows.filter(function (r) {
+    return r.department === 'Engineering';
+  });
+
+  for (var x = 0; x < 20; x++) {
+    var manager = pick(rng, engineeringManagers);
+    addEmployee(
+      pick(rng, [
+        'Software Engineering Intern','QA Intern','Frontend Intern',
+        'Backend Intern','Contract Software Engineer'
+      ]),
+      'Engineering',
+      manager.id
+    );
+  }
+
+  // rows now contains a realistic organization tree
+
+  var columns = [
+    {
+      field: 'name',
+      header: 'Employee',
+      colId: 'employee',
+      pinned: 'left',
+      flex: 2.9,
+      minWidth: 280,
+      renderer: {
+        display: function (p) {
+          var employee = p.row.data || p.row;
+          var depth = p.depth || 0;
+          var isExpanded = p.isExpanded;
+          var hasChildren = p.hasChildren;
+          var indentPx = depth * 24;
+
+          var wrapper = document.createElement("div");
+          wrapper.className = "employee-cell";
+          wrapper.style.cssText =
+            "display:flex;align-items:center;gap:8px;height:100%;padding-left:" + indentPx + "px;";
+
+          var toggleHtml = hasChildren
+            ? '<button class="tree-toggle" data-toggle-row="' + p.row.id + '" ' +
+              'style="width:20px;height:20px;border:none;background:none;cursor:pointer;' +
+              'display:flex;align-items:center;justify-content:center;flex-shrink:0;' +
+              'transform:rotate(' + (isExpanded ? '0deg' : '-90deg') + ');transition:transform .15s;">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" ' +
+              'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<polyline points="6 9 12 15 18 9"></polyline></svg></button>'
+            : '<span style="width:20px;height:20px;flex-shrink:0;"></span>';
+
+          wrapper.innerHTML =
+            toggleHtml +
+            '<img class="employee-avatar" src="' + employee.avatar + '" alt="' + employee.name + '" ' +
+              'style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;" />' +
+            '<div class="employee-info" style="display:flex;flex-direction:column;line-height:1.3;overflow:hidden;">' +
+              '<div class="employee-name" style="font-weight:600;color:#0f172a;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' +
+                employee.name +
+              '</div>' +
+              '<div class="employee-title" style="font-size:12px;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' +
+                employee.title +
+              '</div>' +
+            '</div>';
+
+          return wrapper;
+        }
+      }
+    },
+
+    {
+      field: 'employeeId',
+      header: 'ID',
+      colId: 'id',
+      width: 110,
+      renderer: {
+        display: function (p) {
+          var span = document.createElement("span");
+          span.className = "id-cell";
+          span.style.cssText = "color:#334155;font-size:13px;";
+          span.textContent = p.value;
+          return span;
+        }
+      }
+    },
+
+    {
+      field: 'department',
+      header: 'Department',
+      colId: 'dept',
+      width: 190,
+      renderer: {
+        display: function (p) {
+          var colors = DEPARTMENT_COLORS[p.value] || DEFAULT_DEPARTMENT_COLOR;
+
+          var badge = document.createElement("span");
+          badge.className = "dept-badge";
+          badge.style.cssText =
+            "display:inline-flex;align-items:center;gap:6px;padding:4px 10px;" +
+            "border-radius:9999px;font-size:12.5px;font-weight:500;" +
+            "background:" + colors.bg + ";color:" + colors.text + ";" +
+            "border:1px solid " + colors.border + ";white-space:nowrap;";
+
+          badge.innerHTML =
+            '<span style="width:6px;height:6px;border-radius:50%;background:' + colors.dot + ';flex-shrink:0;"></span>' +
+            '<span>' + p.value + '</span>';
+
+          return badge;
+        }
+      }
+    },
+
+    {
+      field: 'employmentType',
+      header: 'Employment Type',
+      colId: 'empType',
+      width: 150,
+      renderer: {
+        display: function (p) {
+          var span = document.createElement("span");
+          span.className = "employment-type-cell";
+          span.style.cssText = "color:#334155;font-size:13px;";
+          span.textContent = p.value;
+          return span;
+        }
+      }
+    },
+
+    {
+      field: 'country',
+      header: 'Location',
+      colId: 'loc',
+      width: 170,
+      renderer: {
+        display: function (p) {
+          var employee = p.row.data || p.row;
+          var wrapper = document.createElement("div");
+          wrapper.className = "location-cell";
+          wrapper.style.cssText = "display:flex;align-items:center;gap:8px;";
+          wrapper.innerHTML =
+            '<span style="font-size:16px;line-height:1;">' + employee.flag + '</span>' +
+            '<span style="color:#334155;font-size:13px;">' + employee.country + '</span>';
+          return wrapper;
+        }
+      }
+    },
+
+    {
+      field: 'hireDate',
+      header: 'Join Date',
+      colId: 'joinDate',
+      width: 130,
+      renderer: {
+        display: function (p) {
+          var span = document.createElement("span");
+          span.className = "pg-num--muted";
+          span.style.cssText = "color:#64748b;font-size:13px;";
+          span.textContent = String(p.value).slice(0, 10);
+          return span;
+        }
+      }
+    },
+
+    {
+      field: 'salary',
+      header: 'Salary',
+      colId: 'salary',
+      width: 130,
+      renderer: {
+        display: function (p) {
+          var span = document.createElement("span");
+          span.className = "salary-cell";
+          span.style.cssText = "color:#0f172a;font-size:13px;font-weight:500;";
+          span.textContent = "$" + Number(p.value).toLocaleString();
+          return span;
+        }
+      }
+    },
+
+    {
+      field: 'paymentMethod',
+      header: 'Payment Method',
+      colId: 'payment',
+      width: 150,
+      renderer: {
+        display: function (p) {
+          var span = document.createElement("span");
+          span.className = "payment-cell";
+          span.style.cssText = "color:#334155;font-size:13px;";
+          span.textContent = p.value;
+          return span;
+        }
+      }
+    },
+
+    {
+      field: 'status',
+      header: 'Status',
+      colId: 'status',
+      width: 130,
+      renderer: {
+        display: function (p) {
+          var meta = STATUS.filter(function (s) { return s.value === p.value; })[0] || STATUS[0];
+          var isPositive = meta.value === "Active";
+
+          var badge = document.createElement("span");
+          badge.className = "status-badge status-" + meta.value.toLowerCase();
+          badge.style.cssText =
+            "display:inline-flex;align-items:center;gap:4px;padding:4px 10px;" +
+            "border-radius:6px;font-size:12.5px;font-weight:500;white-space:nowrap;" +
+            (isPositive
+              ? "background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;"
+              : "background:#ffffff;color:#334155;border:1px solid #e2e8f0;");
+
+          badge.innerHTML =
+            (isPositive ? '<span style="font-size:11px;">&#10003;</span>' : '') +
+            '<span>' + meta.label + '</span>';
+
+          return badge;
+        }
+      }
+    },
+
+    {
+      field: 'id',
+      header: 'Actions',
+      colId: 'actions',
+      pinned: 'right',
+      width: 110,
+      maxWisth: 150,
+      sortable: false,
+      renderer: {
+        display: function (p) {
+          var employee = p.row.data || p.row;
+          var wrapper = document.createElement("div");
+          wrapper.className = "actions-cell";
+          wrapper.style.cssText = "display:flex;align-items:center;gap:8px;";
+
+          wrapper.innerHTML =
+            '<a href="' + employee.linkedin + '" target="_blank" rel="noopener noreferrer" ' +
+              'title="LinkedIn" class="action-btn action-btn--linkedin" ' +
+              'style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;' +
+              'border-radius:6px;border:1px solid #e2e8f0;background:#ffffff;color:#334155;' +
+              'font-size:11px;font-weight:700;text-decoration:none;cursor:pointer;">in</a>' +
+            '<a href="mailto:' + employee.email + '" ' +
+              'title="Email" class="action-btn action-btn--email" ' +
+              'style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;' +
+              'border-radius:6px;border:1px solid #e2e8f0;background:#ffffff;color:#334155;cursor:pointer;">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+                'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                '<rect x="2" y="4" width="20" height="16" rx="2"></rect>' +
+                '<path d="m22 6-10 7L2 6"></path>' +
+              '</svg>' +
+            '</a>';
+
+          return wrapper;
+        }
+      }
+    }
+  ];
+
+  return {
+    columns: columns,
+    data: rows,
+    options: {
+      showVerticalBorders: true,
+      rowShading: true,
+      rowHeight: 56,
+      treeData: {
+        enabled: true,
+        mode: 'parentId',
+        idField: 'id',
+        parentIdField: 'parentId',
+        toggleColumnId: 'employee',
+        defaultExpanded: 2
+      }
+    }
+  };
+}
 
 // Precompute row/column counts once for the preview cards.
 DEMOS.forEach(function (d) {
@@ -1017,3 +1862,5 @@ DEMOS.forEach(function (d) {
   d.rows = built.data.length;
   d.cols = built.columns.length;
 });
+
+
