@@ -16,7 +16,7 @@ type Demo = {
   c2: string;
   rows: number;
   cols: number;
-  build: () => BuiltGrid;
+  build: () => BuiltGrid; 
 };
 
 const DEMOS = DEMOS_RAW as unknown as Demo[];
