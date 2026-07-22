@@ -176,11 +176,14 @@ const options = {
 
 ## Live Example
 
-<iframe
-  src="/examples/quick-start/index.html"
-  width="100%"
-  height="500"
-/>
+The grid below is a **real, running Photon Grid** — the same `photon-grid-core`
+bundle loaded from the CDN, rendered inline (try sorting a column):
+
+<LiveGrid preset="quickStart" height={340} title="Quick Start — the exact columns & data from the snippets above" />
+
+Custom cell renderers (avatars, badges, formatted numbers) are just as easy:
+
+<LiveGrid preset="richCells" height={380} title="The same data with avatar, badge and currency renderers" />
 
 ## What's Next?
 

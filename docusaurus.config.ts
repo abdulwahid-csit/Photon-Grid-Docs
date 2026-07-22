@@ -33,6 +33,11 @@ const config: Config = {
   tagline: 'The high-performance JavaScript data grid for React, Angular, Vue and vanilla JS — sorting, filtering, grouping, editing, charting and theming.',
   favicon: 'img/logo.svg',
 
+  // Brand webfont (Inter) for the docs theme. Falls back to system-ui offline.
+  stylesheets: [
+    {href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap', rel: 'stylesheet'},
+  ],
+
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
