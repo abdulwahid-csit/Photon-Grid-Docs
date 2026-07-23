@@ -23,7 +23,7 @@ function HomepageHeader() {
           pagination, integrated charts, sparklines and theming — with official
           wrappers for React, Angular and Vue.
         </p>
-        <div className={styles.buttons}>
+        <div className={styles.buttons}> 
           <Link
             className="button button--secondary button--lg"
             to="/docs/getting-started/introduction">
