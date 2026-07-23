@@ -26,12 +26,12 @@ function HomepageHeader() {
         <div className={styles.buttons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/GETTING STARTED/Quick Start">
+            to="/docs/getting-started/introduction">
             Get Started - 1min ⏱️
           </Link>
           <Link
             className="button button--outline button--secondary button--lg"
-            to="/docs/GETTING STARTED/Key Features">
+            to="/docs/more-photon-features/key-features">
             Explore Features
           </Link>
         </div>

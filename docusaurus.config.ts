@@ -303,15 +303,15 @@ const config: Config = {
           items: [
             {
               label: 'Quick Start',
-              to: '/docs/GETTING STARTED/Quick Start',
+              to: '/docs/getting-started/introduction',
             },
             {
               label: 'Columns',
-              to: '/docs/CORE FEATURES/Columns/Overview',
+              to: '/docs/columns/column-headers',
             },
             {
               label: 'Charting',
-              to: '/docs/CHARTING/Integrated/Overview',
+              to: '/docs/charting/overview',
             },
           ],
         },

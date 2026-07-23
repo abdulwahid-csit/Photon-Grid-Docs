@@ -11,8 +11,8 @@
 const AVATAR_COLORS = ['#7c3aed', '#d946ef', '#2563eb', '#059669', '#d97706', '#0891b2', '#dc2626', '#4f46e5'];
 function colorFor(name) {
   let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  for (let i = 0; i < name?.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[h % AVATAR_COLORS?.length];
 }
 function initials(name) {
   const p = String(name).trim().split(/\s+/);

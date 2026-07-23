@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
+import {useColorMode} from '@docusaurus/theme-common';
 import {PRESETS} from './presets';
 import './styles.css';
 
@@ -73,11 +74,20 @@ function LiveGridInner(props: LiveGridProps): React.ReactElement {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [message, setMessage] = useState('Loading Photon Grid…');
 
+  // Follow the Docusaurus light/dark theme. When the docs are in dark mode the
+  // grid renders in dark mode, and vice-versa — unless the caller pins a mode
+  // explicitly via `options.mode`.
+  const {colorMode} = useColorMode();
+  const colorModeRef = useRef(colorMode);
+  colorModeRef.current = colorMode;
+
   const height =
     typeof props.height === 'number' ? `${props.height}px` : props.height ?? '420px';
 
   // Serialise the resolved config so the effect re-runs when it changes.
   const cfg = resolveConfig(props);
+  // A caller-pinned mode wins over the docs theme; otherwise we track it.
+  const pinnedMode = (cfg.options as any)?.mode as string | undefined;
   const cfgKey = JSON.stringify({
     p: props.preset,
     c: cfg.columns?.length,
@@ -106,7 +116,12 @@ function LiveGridInner(props: LiveGridProps): React.ReactElement {
         const options = Object.assign(
           {headerRowHeight: 48, rowHeight: 42},
           cfg.options || {},
-          {columns: cfg.columns, data: cfg.data},
+          {
+            columns: cfg.columns,
+            data: cfg.data,
+            // Seed the grid with the current docs theme (unless pinned).
+            mode: pinnedMode ?? colorModeRef.current,
+          },
         );
 
         gridRef.current = new PG.GridCore(elRef.current, options);
@@ -127,6 +142,15 @@ function LiveGridInner(props: LiveGridProps): React.ReactElement {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cfgKey]);
+
+  // Live-sync the grid's color mode when the docs theme is toggled — no rebuild.
+  useEffect(() => {
+    if (pinnedMode) return; // caller pinned a mode: leave it alone
+    const grid = gridRef.current;
+    if (grid && grid.api && typeof grid.api.setMode === 'function') {
+      grid.api.setMode(colorMode);
+    }
+  }, [colorMode, status, pinnedMode]);
 
   return (
     <figure className="livegrid">
